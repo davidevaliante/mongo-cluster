@@ -1,0 +1,35 @@
+services:
+  main:
+    image: mongo:7
+    command: /scripts/start_and_initiate.sh
+    container_name: main
+    ports:
+      - "27017:27017"
+    networks:
+      - mongoCluster
+    volumes:
+      - ./scripts:/scripts
+    entrypoint: /bin/bash /scripts/start_and_initiate.sh
+
+  worker1:
+    image: mongo:7
+    command: mongod --replSet replica-set --bind_ip_all
+    container_name: worker1
+    ports:
+      - "27018:27017"
+    networks:
+      - mongoCluster
+
+  worker2:
+    image: mongo:7
+    command: mongod --replSet replica-set --bind_ip_all
+    container_name: worker2
+    ports:
+      - "27019:27017"
+    networks:
+      - mongoCluster
+
+networks:
+  mongoCluster:
+    driver: bridge
+
